@@ -9,3 +9,11 @@ describe('Block', () => {
     expect(block.hash).toMatch(/^[a-f0-9]{64}$/);
   });
 });
+
+it('should mine a block that satisfies the difficulty', () => {
+  const block = new Block(1, Date.now(), [], '0');
+
+  block.mineBlock(2);
+
+  expect(block.hash.startsWith('00')).toBe(true);
+});
