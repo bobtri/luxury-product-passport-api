@@ -18,3 +18,21 @@ it('should return the latest block in the chain', () => {
   expect(latestBlock).toBe(blockchain.chain[0]);
   expect(latestBlock.index).toBe(0);
 });
+
+it('should add the first ownership transaction for a new product', () => {
+  const blockchain = new Blockchain();
+
+  const transaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(transaction);
+
+  expect(blockchain.pendingTransactions).toHaveLength(1);
+  expect(blockchain.pendingTransactions[0]).toEqual(transaction);
+});
