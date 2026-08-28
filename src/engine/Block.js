@@ -8,7 +8,6 @@ class Block {
     this.previousHash = previousHash;
 
     this.nonce = 0;
-
     this.hash = this.calculateHash();
   }
 
@@ -21,6 +20,17 @@ class Block {
       this.nonce;
 
     return crypto.createHash('sha256').update(blockData).digest('hex');
+  }
+
+  mineBlock(difficulty) {
+    const target = '0'.repeat(difficulty);
+
+    while (!this.hash.startsWith(target)) {
+      this.nonce++;
+      this.hash = this.calculateHash();
+    }
+
+    return this;
   }
 }
 
