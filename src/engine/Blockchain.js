@@ -9,6 +9,10 @@ class Blockchain {
   createGenesisBlock() {
     return new Block(0, Date.now(), [], '0');
   }
+
+  getLatestBlock() {
+    return this.chain[this.chain.length - 1];
+  }
 }
 
 export default Blockchain;
