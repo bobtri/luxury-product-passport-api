@@ -36,3 +36,31 @@ it('should add the first ownership transaction for a new product', () => {
   expect(blockchain.pendingTransactions).toHaveLength(1);
   expect(blockchain.pendingTransactions[0]).toEqual(transaction);
 });
+
+it('should reject a transaction from someone who is not the current owner', () => {
+  const blockchain = new Blockchain();
+
+  const firstTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(firstTransaction);
+
+  const invalidTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xCollectorB',
+    toAddress: '0xCollectorC',
+    timestamp: Date.now(),
+  };
+
+  expect(() => {
+    blockchain.addTransaction(invalidTransaction);
+  }).toThrow('Transaction rejected: sender is not the current owner');
+});
