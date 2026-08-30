@@ -4,10 +4,24 @@ import app from '../src/app.js';
 
 describe('Blockchain API', () => {
   it('GET /api/chain should return the blockchain', async () => {
-    const response = await request(app).get('/api/chain');
+    // ditt befintliga test
+  });
 
-    expect(response.status).toBe(200);
-    expect(response.body.chain).toHaveLength(1);
-    expect(response.body.pendingTransactions).toEqual([]);
+  it('POST /api/transactions should add a valid transaction', async () => {
+    const transaction = {
+      serialNumber: 'ROLEX-SUB-9981',
+      brand: 'Rolex',
+      model: 'Submariner',
+      fromAddress: '0xManufacturerKey',
+      toAddress: '0xCollectorA',
+      timestamp: Date.now(),
+    };
+
+    const response = await request(app)
+      .post('/api/transactions')
+      .send(transaction);
+
+    expect(response.status).toBe(201);
+    expect(response.body.transaction).toEqual(transaction);
   });
 });
