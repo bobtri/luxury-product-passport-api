@@ -35,6 +35,13 @@ export function verifyProduct(req, res) {
   const { id } = req.params;
 
   const history = blockchain.getProductHistory(id);
+
+  if (history.length === 0) {
+    return res.status(404).json({
+      error: 'Product not found',
+    });
+  }
+
   const currentOwner = blockchain.getCurrentOwner(id);
 
   res.status(200).json({
