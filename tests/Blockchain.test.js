@@ -115,3 +115,23 @@ it('should mine pending transactions into a new block', () => {
   expect(minedBlock.previousHash).toBe(blockchain.chain[0].hash);
   expect(blockchain.pendingTransactions).toEqual([]);
 });
+
+it('should detect if the blockchain has been tampered with', () => {
+  const blockchain = new Blockchain();
+
+  const transaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(transaction);
+  blockchain.minePendingTransactions();
+
+  blockchain.chain[1].data[0].toAddress = '0xHacker';
+
+  expect(blockchain.isChainValid()).toBe(false);
+});
