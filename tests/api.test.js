@@ -132,4 +132,24 @@ describe('Blockchain API', () => {
     expect(response.status).toBe(404);
     expect(response.body.error).toBe('Product not found');
   });
+
+  it('POST /api/mine should clear pending transactions after mining', async () => {
+    const transaction = {
+      serialNumber: 'ROLEX-CLEAR-PENDING-001',
+      brand: 'Rolex',
+      model: 'Submariner',
+      fromAddress: '0xManufacturerKey',
+      toAddress: '0xCollectorA',
+      timestamp: Date.now(),
+    };
+
+    await request(app).post('/api/transactions').send(transaction);
+
+    await request(app).post('/api/mine');
+
+    const response = await request(app).get('/api/chain');
+
+    expect(response.status).toBe(200);
+    expect(response.body.pendingTransactions).toEqual([]);
+  });
 });
