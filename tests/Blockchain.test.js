@@ -135,3 +135,21 @@ it('should detect if the blockchain has been tampered with', () => {
 
   expect(blockchain.isChainValid()).toBe(false);
 });
+
+it('should confirm that an untampered blockchain is valid', () => {
+  const blockchain = new Blockchain();
+
+  const transaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(transaction);
+  blockchain.minePendingTransactions();
+
+  expect(blockchain.isChainValid()).toBe(true);
+});
