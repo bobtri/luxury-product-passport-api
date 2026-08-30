@@ -64,3 +64,32 @@ it('should reject a transaction from someone who is not the current owner', () =
     blockchain.addTransaction(invalidTransaction);
   }).toThrow('Transaction rejected: sender is not the current owner');
 });
+
+it('should allow the current owner to transfer the product', () => {
+  const blockchain = new Blockchain();
+
+  const firstTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(firstTransaction);
+
+  const secondTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xCollectorA',
+    toAddress: '0xCollectorB',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(secondTransaction);
+
+  expect(blockchain.pendingTransactions).toHaveLength(2);
+  expect(blockchain.getCurrentOwner('ROLEX-SUB-9981')).toBe('0xCollectorB');
+});
