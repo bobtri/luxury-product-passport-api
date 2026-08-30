@@ -55,4 +55,23 @@ describe('Blockchain API', () => {
       'Transaction rejected: sender is not the current owner',
     );
   });
+
+  it('POST /api/mine should mine pending transactions', async () => {
+    const transaction = {
+      serialNumber: 'ROLEX-API-MINE-001',
+      brand: 'Rolex',
+      model: 'Submariner',
+      fromAddress: '0xManufacturerKey',
+      toAddress: '0xCollectorA',
+      timestamp: Date.now(),
+    };
+
+    await request(app).post('/api/transactions').send(transaction);
+
+    const response = await request(app).post('/api/mine');
+
+    expect(response.status).toBe(201);
+    expect(response.body.block.data).toContainEqual(transaction);
+    expect(response.body.block.hash.startsWith('00')).toBe(true);
+  });
 });
