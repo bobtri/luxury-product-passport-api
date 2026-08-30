@@ -109,4 +109,20 @@ describe('Blockchain API', () => {
     expect(response.body.currentOwner).toBe('0xCollectorB');
     expect(response.body.history).toHaveLength(2);
   });
+
+  it('POST /api/transactions should reject a transaction with missing required fields', async () => {
+    const invalidTransaction = {
+      serialNumber: 'ROLEX-INVALID-001',
+      brand: 'Rolex',
+      model: 'Submariner',
+      toAddress: '0xCollectorA',
+    };
+
+    const response = await request(app)
+      .post('/api/transactions')
+      .send(invalidTransaction);
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe('Missing required transaction fields');
+  });
 });
