@@ -4,6 +4,8 @@ class Blockchain {
   constructor() {
     this.chain = [this.createGenesisBlock()];
     this.pendingTransactions = [];
+
+    this.difficulty = Number.parseInt(process.env.POW_DIFFICULTY ?? '2', 10);
   }
 
   createGenesisBlock() {
@@ -48,6 +50,23 @@ class Blockchain {
     this.pendingTransactions.push(transaction);
 
     return transaction;
+  }
+
+  minePendingTransactions() {
+    const newBlock = new Block(
+      this.chain.length,
+      Date.now(),
+      [...this.pendingTransactions],
+      this.getLatestBlock().hash,
+    );
+
+    newBlock.mineBlock(this.difficulty);
+
+    this.chain.push(newBlock);
+
+    this.pendingTransactions = [];
+
+    return newBlock;
   }
 }
 
