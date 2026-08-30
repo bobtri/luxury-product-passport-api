@@ -23,4 +23,12 @@ export function addTransaction(req, res) {
   }
 }
 
+export function minePendingTransactions(req, res) {
+  const block = blockchain.minePendingTransactions();
+
+  res.status(201).json({
+    block,
+  });
+}
+
 export { blockchain };
