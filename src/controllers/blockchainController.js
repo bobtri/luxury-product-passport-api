@@ -31,4 +31,17 @@ export function minePendingTransactions(req, res) {
   });
 }
 
+export function verifyProduct(req, res) {
+  const { id } = req.params;
+
+  const history = blockchain.getProductHistory(id);
+  const currentOwner = blockchain.getCurrentOwner(id);
+
+  res.status(200).json({
+    serialNumber: id,
+    currentOwner,
+    history,
+  });
+}
+
 export { blockchain };
