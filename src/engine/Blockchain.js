@@ -40,6 +40,26 @@ class Blockchain {
     return transactions[transactions.length - 1].toAddress;
   }
 
+  getProductHistory(serialNumber) {
+    const history = [];
+
+    for (const block of this.chain) {
+      for (const transaction of block.data) {
+        if (transaction.serialNumber === serialNumber) {
+          history.push(transaction);
+        }
+      }
+    }
+
+    for (const transaction of this.pendingTransactions) {
+      if (transaction.serialNumber === serialNumber) {
+        history.push(transaction);
+      }
+    }
+
+    return history;
+  }
+
   addTransaction(transaction) {
     const currentOwner = this.getCurrentOwner(transaction.serialNumber);
 
