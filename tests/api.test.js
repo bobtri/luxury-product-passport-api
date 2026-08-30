@@ -125,4 +125,11 @@ describe('Blockchain API', () => {
     expect(response.status).toBe(400);
     expect(response.body.error).toBe('Missing required transaction fields');
   });
+
+  it('GET /api/verify/:id should return 404 for unknown product', async () => {
+    const response = await request(app).get('/api/verify/UNKNOWN-PRODUCT-001');
+
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe('Product not found');
+  });
 });
