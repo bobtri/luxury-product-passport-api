@@ -74,4 +74,39 @@ describe('Blockchain API', () => {
     expect(response.body.block.data).toContainEqual(transaction);
     expect(response.body.block.hash.startsWith('00')).toBe(true);
   });
+
+  it('GET /api/verify/:id should return product history and current owner', async () => {
+    const firstTransaction = {
+      serialNumber: 'ROLEX-VERIFY-001',
+      brand: 'Rolex',
+      model: 'Submariner',
+      fromAddress: '0xManufacturerKey',
+      toAddress: '0xCollectorA',
+      timestamp: Date.now(),
+    };
+
+    const secondTransaction = {
+      serialNumber: 'ROLEX-VERIFY-001',
+      brand: 'Rolex',
+      model: 'Submariner',
+      fromAddress: '0xCollectorA',
+      toAddress: '0xCollectorB',
+      timestamp: Date.now() + 1,
+    };
+
+    await request(app).post('/api/transactions').send(firstTransaction);
+
+    await request(app).post('/api/mine');
+
+    await request(app).post('/api/transactions').send(secondTransaction);
+
+    await request(app).post('/api/mine');
+
+    const response = await request(app).get('/api/verify/ROLEX-VERIFY-001');
+
+    expect(response.status).toBe(200);
+    expect(response.body.serialNumber).toBe('ROLEX-VERIFY-001');
+    expect(response.body.currentOwner).toBe('0xCollectorB');
+    expect(response.body.history).toHaveLength(2);
+  });
 });
