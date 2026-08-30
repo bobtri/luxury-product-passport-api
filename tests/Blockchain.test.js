@@ -153,3 +153,37 @@ it('should confirm that an untampered blockchain is valid', () => {
 
   expect(blockchain.isChainValid()).toBe(true);
 });
+
+it('should return the full transaction history for a product', () => {
+  const blockchain = new Blockchain();
+
+  const firstTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  const secondTransaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xCollectorA',
+    toAddress: '0xCollectorB',
+    timestamp: Date.now() + 1,
+  };
+
+  blockchain.addTransaction(firstTransaction);
+  blockchain.minePendingTransactions();
+
+  blockchain.addTransaction(secondTransaction);
+  blockchain.minePendingTransactions();
+
+  const history = blockchain.getProductHistory('ROLEX-SUB-9981');
+
+  expect(history).toHaveLength(2);
+  expect(history[0]).toEqual(firstTransaction);
+  expect(history[1]).toEqual(secondTransaction);
+});
