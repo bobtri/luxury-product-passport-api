@@ -93,3 +93,25 @@ it('should allow the current owner to transfer the product', () => {
   expect(blockchain.pendingTransactions).toHaveLength(2);
   expect(blockchain.getCurrentOwner('ROLEX-SUB-9981')).toBe('0xCollectorB');
 });
+
+it('should mine pending transactions into a new block', () => {
+  const blockchain = new Blockchain();
+
+  const transaction = {
+    serialNumber: 'ROLEX-SUB-9981',
+    brand: 'Rolex',
+    model: 'Submariner',
+    fromAddress: '0xManufacturerKey',
+    toAddress: '0xCollectorA',
+    timestamp: Date.now(),
+  };
+
+  blockchain.addTransaction(transaction);
+
+  const minedBlock = blockchain.minePendingTransactions();
+
+  expect(blockchain.chain).toHaveLength(2);
+  expect(minedBlock.data).toContainEqual(transaction);
+  expect(minedBlock.previousHash).toBe(blockchain.chain[0].hash);
+  expect(blockchain.pendingTransactions).toEqual([]);
+});
